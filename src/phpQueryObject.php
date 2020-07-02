@@ -1,6 +1,11 @@
 <?php
 namespace PQuery;
 use Exception;
+use Iterator;
+use Countable;
+use ArrayAccess;
+use DOMElement;
+use DOMDocument;
 /**
  * Class representing phpQuery objects.
  *
@@ -142,9 +147,9 @@ class phpQueryObject
    * @TODO documentWrapper
 	 */
 	protected function isRoot( $node) {
-//		return $node instanceof DOMDOCUMENT || $node->tagName == 'html';
-		return $node instanceof DOMDOCUMENT
-			|| ($node instanceof DOMELEMENT && $node->tagName == 'html')
+//		return $node instanceof DOMDocument || $node->tagName == 'html';
+		return $node instanceof DOMDocument
+			|| ($node instanceof DOMElement && $node->tagName == 'html')
 			|| $this->root->isSameNode($node);
 	}
 	/**
@@ -258,7 +263,7 @@ class phpQueryObject
 				continue;
 			// jquery diff
 			if ($submit && $input->is('[type=submit]')) {
-				if ($submit instanceof DOMELEMENT && ! $input->elements[0]->isSameNode($submit))
+				if ($submit instanceof DOMElement && ! $input->elements[0]->isSameNode($submit))
 					continue;
 				else if (is_string($submit) && $input->attr('name') != $submit)
 					continue;
@@ -694,12 +699,12 @@ class phpQueryObject
 		// TODO combine code below with phpQuery::pq() context guessing code
 		//   as generic function
 		if ($context) {
-			if (! is_array($context) && $context instanceof DOMELEMENT)
+			if (! is_array($context) && $context instanceof DOMElement)
 				$this->elements = array($context);
 			else if (is_array($context)) {
 				$this->elements = array();
 				foreach ($context as $c)
-					if ($c instanceof DOMELEMENT)
+					if ($c instanceof DOMElement)
 						$this->elements[] = $c;
 			} else if ( $context instanceof self )
 				$this->elements = $context->elements;
@@ -801,7 +806,7 @@ class phpQueryObject
 					foreach($subElements as $node) {
 						// search first DOMElement sibling
 						$test = $node->nextSibling;
-						while($test && ! ($test instanceof DOMELEMENT))
+						while($test && ! ($test instanceof DOMElement))
 							$test = $test->nextSibling;
 						if ($test && $this->is($subSelector, $test))
 							$this->elements[] = $test;
@@ -974,7 +979,7 @@ class phpQueryObject
 			case 'parent':
 				$this->elements = $this->map(
 					function ($node) {
-						return $node instanceof DOMELEMENT && $node->childNodes->length
+						return $node instanceof DOMElement && $node->childNodes->length
 							? $node : null;
 					}
 				)->elements;
@@ -982,7 +987,7 @@ class phpQueryObject
 			case 'empty':
 				$this->elements = $this->map(
 					function ($node) {
-						return $node instanceof DOMELEMENT && $node->childNodes->length
+						return $node instanceof DOMElement && $node->childNodes->length
 							? null : $node;
 					}
 				)->elements;
@@ -1213,7 +1218,7 @@ class phpQueryObject
 			foreach($this->stack() as $node) {
 				$break = false;
 				foreach($selector as $s) {
-					if (!($node instanceof DOMELEMENT)) {
+					if (!($node instanceof DOMElement)) {
 						// all besides DOMElement
 						if ( $s[0] == '[') {
 							$attr = trim($s, '[]');
@@ -1506,7 +1511,7 @@ class phpQueryObject
 			return $this;
 		$wrapper->insertBefore($this->elements[0]);
 		$deepest = $wrapper->elements[0];
-		while($deepest->firstChild && $deepest->firstChild instanceof DOMELEMENT)
+		while($deepest->firstChild && $deepest->firstChild instanceof DOMElement)
 			$deepest = $deepest->firstChild;
 		pq($deepest)->append($this);
 		return $this;
@@ -1535,7 +1540,7 @@ class phpQueryObject
    */
 	public function ___wrapAllCallback($node) {
 		$deepest = $node;
-		while($deepest->firstChild && $deepest->firstChild instanceof DOMELEMENT)
+		while($deepest->firstChild && $deepest->firstChild instanceof DOMElement)
 			$deepest = $deepest->firstChild;
 		return $deepest;
 	}
@@ -2408,7 +2413,7 @@ class phpQueryObject
 			$test = $node;
 			while( isset($test->{$direction}) && $test->{$direction}) {
 				$test = $test->{$direction};
-				if (! $test instanceof DOMELEMENT)
+				if (! $test instanceof DOMElement)
 					continue;
 				$stack[] = $test;
 				if ($limitToOne)
@@ -3094,17 +3099,17 @@ class phpQueryObject
 //		if ($namespace)
 //			$namespace .= ':';
 		foreach($loop as $node) {
-			if ($node instanceof DOMDOCUMENT) {
+			if ($node instanceof DOMDocument) {
 				$return[] = '';
 				continue;
 			}
 			$xpath = array();
-			while(! ($node instanceof DOMDOCUMENT)) {
+			while(! ($node instanceof DOMDocument)) {
 				$i = 1;
 				$sibling = $node;
 				while($sibling->previousSibling) {
 					$sibling = $sibling->previousSibling;
-					$isElement = $sibling instanceof DOMELEMENT;
+					$isElement = $sibling instanceof DOMElement;
 					if ($isElement && $sibling->tagName == $node->tagName)
 						$i++;
 				}

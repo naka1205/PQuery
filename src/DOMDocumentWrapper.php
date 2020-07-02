@@ -1,6 +1,10 @@
 <?php
 namespace PQuery;
 use Exception;
+use DOMNode;
+use DOMXPath;
+use DOMDocument;
+use DOMNodeList;
 /**
  * DOMDocumentWrapper class simplifies work with DOMDocument.
  *
@@ -56,7 +60,7 @@ class DOMDocumentWrapper {
 	public function load($markup, $contentType = null, $newDocumentID = null) {
 //		phpQuery::$documents[$id] = $this;
 		$this->contentType = strtolower($contentType);
-		if ($markup instanceof DOMDOCUMENT) {
+		if ($markup instanceof DOMDocument) {
 			$this->document = $markup;
 			$this->root = $this->document;
 			$this->charset = $this->document->encoding;
@@ -432,7 +436,7 @@ class DOMDocumentWrapper {
 	public function import($source, $sourceCharset = null) {
 		// TODO charset conversions
 		$return = array();
-		if ($source instanceof DOMNODE && !($source instanceof DOMNODELIST))
+		if ($source instanceof DOMNode && !($source instanceof DOMNodeList))
 			$source = array($source);
 //		if (is_array($source)) {
 //			foreach($source as $node) {
@@ -458,7 +462,7 @@ class DOMDocumentWrapper {
 //			else
 //				return $this->import($fake->root->childNodes);
 //		}
-		if (is_array($source) || $source instanceof DOMNODELIST) {
+		if (is_array($source) || $source instanceof DOMNodeList) {
 			// dom nodes
 			self::debug('Importing nodes to document');
 			foreach($source as $node)
@@ -489,9 +493,9 @@ class DOMDocumentWrapper {
 		if (! $charset)
 			$charset = $this->charset;
 //	$fake->documentCreate($this->charset);
-		if ($source instanceof DOMNODE && !($source instanceof DOMNODELIST))
+		if ($source instanceof DOMNode && !($source instanceof DOMNodeList))
 			$source = array($source);
-		if (is_array($source) || $source instanceof DOMNODELIST) {
+		if (is_array($source) || $source instanceof DOMNodeList) {
 			// dom nodes
 			// load fake document
 			if (! $this->documentFragmentLoadMarkup($fake, $charset))
@@ -577,11 +581,11 @@ class DOMDocumentWrapper {
 	 * @return string
 	 */
 	public function markup($nodes = null, $innerMarkup = false) {
-		if (isset($nodes) && count($nodes) == 1 && $nodes[0] instanceof DOMDOCUMENT)
+		if (isset($nodes) && count($nodes) == 1 && $nodes[0] instanceof DOMDocument)
 			$nodes = null;
 		if (isset($nodes)) {
 			$markup = '';
-			if (!is_array($nodes) && !($nodes instanceof DOMNODELIST) )
+			if (!is_array($nodes) && !($nodes instanceof DOMNodeList) )
 				$nodes = array($nodes);
 			if ($this->isDocumentFragment && ! $innerMarkup)
 				foreach($nodes as $i => $node)

@@ -14,10 +14,10 @@
 
 // class names for instanceof
 // TODO move them as class constants into phpQuery
-define('DOMDOCUMENT', '\DOMDocument');
-define('DOMELEMENT', '\DOMElement');
-define('DOMNODELIST', '\DOMNodeList');
-define('DOMNODE', '\DOMNode');
+// define('DOMDOCUMENT', '\DOMDocument');
+// define('DOMELEMENT', '\DOMElement');
+// define('DOMNODELIST', '\DOMNodeList');
+// define('DOMNODE', '\DOMNode');
 
 // -- Multibyte Compatibility functions ---------------------------------------
 // http://svn.iphonewebdev.com/lace/lib/mb_compat.php
@@ -120,7 +120,7 @@ if (!function_exists('mb_substr_count'))
 function pq($arg1, $context = null) {
 	$args = func_get_args();
 	return call_user_func_array(
-		array('phpQuery', 'pq'),
+		array('PQuery\\phpQuery', 'pq'),
 		$args
 	);
 }
@@ -130,6 +130,9 @@ set_include_path(
 		.PATH_SEPARATOR.dirname(__FILE__).'/phpQuery/'
 		.PATH_SEPARATOR.dirname(__FILE__).'/phpQuery/plugins/'
 );
+
+use PQuery\phpQuery;
+use PQuery\phpQueryPlugins;
 // why ? no __call nor __get for statics in php...
 // XXX __callStatic will be available in PHP 5.3
-// phpQuery::$plugins = new phpQueryPlugins();
+phpQuery::$plugins = new phpQueryPlugins();

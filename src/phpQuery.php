@@ -1,6 +1,10 @@
 <?php
 namespace PQuery;
 use Exception;
+use DOMNode;
+use DOMXPath;
+use DOMDocument;
+use DOMNodeList;
 /**
  * Static namespace for phpQuery functions.
  *
@@ -117,7 +121,7 @@ abstract class phpQuery {
    * phpQuery object or false in case of error.
 	 */
 	public static function pq($arg1, $context = null) {
-		if ($arg1 instanceof DOMNODE && ! isset($context)) {
+		if ($arg1 instanceof DOMNode && ! isset($context)) {
 			foreach(phpQuery::$documents as $documentWrapper) {
 				$compare = $arg1 instanceof DOMDocument
 					? $arg1 : $arg1->ownerDocument;
@@ -132,13 +136,13 @@ abstract class phpQuery {
 //		} else if (is_object($context) && ($context instanceof PHPQUERY || is_subclass_of($context, 'phpQueryObject')))
 		} else if (is_object($context) && $context instanceof phpQueryObject)
 			$domId = $context->getDocumentID();
-		else if ($context instanceof DOMDOCUMENT) {
+		else if ($context instanceof DOMDocument) {
 			$domId = self::getDocumentID($context);
 			if (! $domId) {
 				//throw new Exception('Orphaned DOMDocument');
 				$domId = self::newDocument($context)->getDocumentID();
 			}
-		} else if ($context instanceof DOMNODE) {
+		} else if ($context instanceof DOMNode) {
 			$domId = self::getDocumentID($context);
 			if (! $domId) {
 				throw new Exception('Orphaned DOMNode');
@@ -163,17 +167,17 @@ abstract class phpQuery {
 			foreach($arg1->elements as $node)
 				$phpQuery->elements[] = $phpQuery->document->importNode($node, true);
 			return $phpQuery;
-		} else if ($arg1 instanceof DOMNODE || (is_array($arg1) && isset($arg1[0]) && $arg1[0] instanceof DOMNODE)) {
+		} else if ($arg1 instanceof DOMNode || (is_array($arg1) && isset($arg1[0]) && $arg1[0] instanceof DOMNode)) {
 			/*
 			 * Wrap DOM nodes with phpQuery object, import into document when needed:
 			 * pq(array($domNode1, $domNode2))
 			 */
 			$phpQuery = new phpQueryObject($domId);
-			if (!($arg1 instanceof DOMNODELIST) && ! is_array($arg1))
+			if (!($arg1 instanceof DOMNodeLIST) && ! is_array($arg1))
 				$arg1 = array($arg1);
 			$phpQuery->elements = array();
 			foreach($arg1 as $node) {
-				$sameDocument = $node->ownerDocument instanceof DOMDOCUMENT
+				$sameDocument = $node->ownerDocument instanceof DOMDocument
 					&& ! $node->ownerDocument->isSameNode($phpQuery->document);
 				$phpQuery->elements[] = $sameDocument
 					? $phpQuery->document->importNode($node, true)
@@ -198,11 +202,11 @@ abstract class phpQuery {
 //			if ($context && ($context instanceof PHPQUERY || is_subclass_of($context, 'phpQueryObject')))
 			if ($context && $context instanceof phpQueryObject)
 				$phpQuery->elements = $context->elements;
-			else if ($context && $context instanceof DOMNODELIST) {
+			else if ($context && $context instanceof DOMNodeLIST) {
 				$phpQuery->elements = array();
 				foreach($context as $node)
 					$phpQuery->elements[] = $node;
-			} else if ($context && $context instanceof DOMNODE)
+			} else if ($context && $context instanceof DOMNode)
 				$phpQuery->elements = array($context);
 			return $phpQuery->find($arg1);
 		}
@@ -462,7 +466,7 @@ abstract class phpQuery {
 //			? $documentID
 //			: md5(microtime());
 		$document = null;
-		if ($html instanceof DOMDOCUMENT) {
+		if ($html instanceof DOMDocument) {
 			if (self::getDocumentID($html)) {
 				// document already exists in phpQuery::$documents, make a copy
 				$document = clone $html;
@@ -934,12 +938,12 @@ abstract class phpQuery {
 	 * @return string
 	 */
 	public static function getDocumentID($source) {
-		if ($source instanceof DOMDOCUMENT) {
+		if ($source instanceof DOMDocument) {
 			foreach(phpQuery::$documents as $id => $document) {
 				if ($source->isSameNode($document->document))
 					return $id;
 			}
-		} else if ($source instanceof DOMNODE) {
+		} else if ($source instanceof DOMNode) {
 			foreach(phpQuery::$documents as $id => $document) {
 				if ($source->ownerDocument->isSameNode($document->document))
 					return $id;
@@ -957,7 +961,7 @@ abstract class phpQuery {
 	 * @return string
 	 */
 	public static function getDOMDocument($source) {
-		if ($source instanceof DOMDOCUMENT)
+		if ($source instanceof DOMDocument)
 			return $source;
 		$source = self::getDocumentID($source);
 		return $source
@@ -975,7 +979,7 @@ abstract class phpQuery {
 	 */
 	public static function makeArray($obj) {
 		$array = array();
-		if (is_object($object) && $object instanceof DOMNODELIST) {
+		if (is_object($object) && $object instanceof DOMNodeLIST) {
 			foreach($object as $value)
 				$array[] = $value;
 		} else if (is_object($object) && ! ($object instanceof Iterator)) {

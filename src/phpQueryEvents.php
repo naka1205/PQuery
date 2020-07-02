@@ -1,5 +1,7 @@
 <?php
 namespace PQuery;
+use DOMEvent;
+
 /**
  * Event handling class.
  *
