@@ -1,4 +1,6 @@
 <?php
+namespace PQuery;
+use Exception;
 /**
  * Static namespace for phpQuery functions.
  *

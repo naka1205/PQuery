@@ -1,4 +1,5 @@
 <?php
+namespace PQuery;
 /**
  * Event handling class.
  *

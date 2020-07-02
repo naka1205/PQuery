@@ -1,5 +1,6 @@
 <?php
-
+namespace PQuery;
+use Exception;
 /**
  * DOMDocumentWrapper class simplifies work with DOMDocument.
  *

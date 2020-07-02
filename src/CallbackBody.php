@@ -1,5 +1,5 @@
 <?php
-
+namespace PQuery;
 /**
  * Shorthand for new Callback(create_function(...), ...);
  *

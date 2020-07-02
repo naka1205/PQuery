@@ -1,4 +1,5 @@
 <?php
+namespace PQuery;
 //class CallbackReference extends Callback {
 //	/**
 //	 *

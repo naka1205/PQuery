@@ -1,5 +1,5 @@
 <?php
-
+namespace PQuery;
 /**
  * Callback class introduces currying-like pattern.
  *

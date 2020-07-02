@@ -1,4 +1,5 @@
 <?php
+namespace PQuery;
 /**
  * DOMEvent class.
  *

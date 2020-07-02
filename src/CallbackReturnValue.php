@@ -1,5 +1,5 @@
 <?php
-
+namespace PQuery;
 /**
  * Callback type which on execution returns value passed during creation.
  *

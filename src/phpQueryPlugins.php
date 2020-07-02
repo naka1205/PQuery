@@ -1,4 +1,6 @@
 <?php
+namespace PQuery;
+use Exception;
 /**
  * Plugins static namespace class.
  *

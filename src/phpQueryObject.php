@@ -1,5 +1,6 @@
 <?php
-
+namespace PQuery;
+use Exception;
 /**
  * Class representing phpQuery objects.
  *

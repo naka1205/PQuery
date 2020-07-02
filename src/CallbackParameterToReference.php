@@ -1,4 +1,5 @@
 <?php
+namespace PQuery;
 /**
  * CallbackParameterToReference can be used when we don't really want a callback,
  * only parameter passed to it. CallbackParameterToReference takes first
